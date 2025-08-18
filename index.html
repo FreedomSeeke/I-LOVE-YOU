@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>I LOVE YOU, 钱思羽</title>
+<style>
+  /* 引入华文行楷字体 */
+  @font-face {
+    font-family: 'STXingkai';
+    src: url('https://s1.aigei.com/src/fil/ttf/bd/bd7b9d3040394c98a5325ca3f0ebf7fc.ttf?download/%E5%8D%8E%E6%96%87%E8%A1%8C%E6%A5%B7_%E7%88%B1%E7%BB%99%E7%BD%91_aigei_com.ttf&e=1755428520&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:QtiRxQ4REZPCO5sBsXYxPVzDtRc=') format('truetype');
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+  }
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  h1 {
+    position: relative;
+    color: pink;
+    font-size: 10vw;
+    text-align: center;
+    z-index: 1;
+    margin: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'STXingkai', "华文行楷", sans-serif;
+    font-weight: 100;
+  }
+</style>
+</head>
+<body>
+<canvas id="heartCanvas"></canvas>
+<h1>钱思羽, 我喜欢你!</h1>
+
+<script>
+const canvas = document.getElementById('heartCanvas');
+const ctx = canvas.getContext('2d');
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+
+// 心形公式
+function heart(t, size=15){
+    let x = 16 * Math.pow(Math.sin(t), 3);
+    let y = -(13 * Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+    x = x * size + width/2;
+    y = y * size + height/2;
+    return {x, y};
+}
+
+// 随机散布点
+function scatter(point, beta=0.15){
+    let ratioX = -beta * Math.log(Math.random());
+    let ratioY = -beta * Math.log(Math.random());
+    let dx = ratioX * (point.x - width/2);
+    let dy = ratioY * (point.y - height/2);
+    return {x: point.x - dx, y: point.y - dy};
+}
+
+// 生成心形点
+let points = [];
+for(let i=0; i<2000; i++){
+    let t = Math.random() * 2 * Math.PI;
+    let p = heart(t, 11);
+    points.push(scatter(p));
+}
+
+// 动画渲染
+function render(){
+    ctx.clearRect(0,0,width,height);
+    for(let pt of points){
+        ctx.fillStyle = "#FF99CC";
+        ctx.fillRect(pt.x, pt.y, 2, 2);
+    }
+    requestAnimationFrame(render);
+}
+render();
+
+// 窗口调整
+window.addEventListener('resize', ()=>{
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+});
+</script>
+</body>
+</html>
